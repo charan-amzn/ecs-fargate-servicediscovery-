@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Add a Cloud9 development environment for accessing the cluster - Credits nathankpeck@
+Parameters:
+  EnvironmentName:
+    Type: String
+    Default: production
+    Description: The name of the environment to add this stack to
+Resources:
+  IDE:
+    Type: AWS::Cloud9::EnvironmentEC2
+    Properties:
+      Description: Development/Testing environment in the same VPC as your ECS cluster
+      AutomaticStopTimeMinutes: 60
+      InstanceType: t2.micro
+      Name: ecs-development-environment
+      SubnetId:
+        Fn::ImportValue: !Sub ${EnvironmentName}:PublicSubnetOne
+
+Outputs:
+  Url:
+    Value: !Sub https://${AWS::Region}.console.aws.amazon.com/cloud9/ide/${IDE}?region=${AWS::Region}
